@@ -1,0 +1,222 @@
+# A-dalis
+/****************************************************************
+ * Šioje klasėje pateikamas įvadas į JavaFX grafiką
+ * 
+ * Pradžioje vykdykite kodą ir stebėkite atliekamus veiksmus
+ * Užduotis atlikite sekdami nurodymus programinio kodo komentaruose
+ * Gynimo metu atlikite dėstytojo nurodytas užduotis naujų metodų pagalba.
+ *
+ * @author Eimutis Karčiauskas, KTU programų inžinerijos katedra 2019 08 05
+ **************************************************************************/
+package demos.graphics;
+
+import com.sun.javafx.geom.Path2D;
+import extendsFX.BaseGraphics;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
+public class Demo0_Basic extends BaseGraphics {
+    // pradžioje brėšime horizontalias ir vertikalias linijas per centrą
+    private void drawHVtoCenter() {  
+        gc.setLineWidth(3);       // brėžimo linijos plotis
+        gc.setStroke(Color.RED);  // ir tos linijos spalva
+        gc.strokeLine(0, canvasH / 2, canvasW, canvasH / 2); //1. kiek atminusuojama linijos
+        // 2.taško važiavimas aukštyn žemyn 3.Linijos ilgis ++
+        // 4. taško važiavimas aukštyn žemyn iš dešinės pusės
+        gc.strokeLine(canvasW / 2, 0, canvasW / 2, canvasH);
+    }
+    // po to brėšime įstrižaines per centrą
+    private void drawXtoCenter() {
+        gc.setLineWidth(4);         // brėžimo linijos plotis
+        gc.setStroke(Color.GREEN);  // ir tos linijos spalva
+        gc.strokeLine(0, 0, canvasW, canvasH);
+        gc.strokeLine(0, canvasH, canvasW, 0);
+    }  
+// UŽDUOTIS_1: plonomis linijomis su žingsniu step=50 nubrėžkite tinklelį
+    private void drawGrid1() {
+        double step = 50;
+        gc.setLineWidth(0.3);
+        for(double u = step; u < Math.max(canvasW, canvasH); u += step) {
+            gc.setStroke(u%100==0? Color.BLACK.brighter() : Color.BLACK);
+            gc.strokeLine(0, u, canvasW, u);   // horizontalios linijos
+            gc.strokeLine(u, 0, u, canvasH);   // vertikalios linijos
+        }
+    }
+// https://examples.javacodegeeks.com/desktop-java/javafx/javafx-canvas-example/    
+    private void drawExamples1() {
+        double lw = 3.0;
+        gc.setLineWidth(lw);        // brėžimo linijos plotis
+        gc.setStroke(Color.BLUE);   // ir tos linijos spalva
+        gc.setFill(Color.RED);      // dažymo spalva figūroms
+        int x=10, y=10, w=80, h=50, 
+            d=20, ax=10, ay=20; // d-tarpas tarp elementų, ax,ay-apvalinimai
+        gc.strokeRoundRect(x, y, w, h, ax, ay);
+        x+=w+d; // sekantis į dešinę
+        gc.fillRoundRect(  x, y, w, h, ax, ay);
+        gc.setLineWidth(0.5);
+        gc.strokeText("Wolf and Bear", x, y+h);
+        //-------------------
+        gc.setLineWidth(2*lw);    // dvigubai pastoriname liniją      
+        gc.setFill(Color.YELLOW);
+        x = 10;    // grįžtame horizontaliai
+        y += h+d;  // ir pereiname žemyn
+        gc.strokeOval(x, y, w, h);
+        x += w+d; // sekantis į dešinę
+        gc.fillOval( x, y, h, w);
+        x = 10;     // grįžtame horizontaliai
+        y += h+2*d; // ir pereiname žemyn ir brėžiame lankus
+        gc.strokeArc  (x, y, w, w, 30,  90, ArcType.ROUND);
+        gc.fillArc(x+w+d, y, w, w, 45, 180, ArcType.OPEN);
+    }  
+    private void drawUnicode(){
+        // išbandykite ir kitus simbolius
+        // https://en.wikipedia.org/wiki/List_of_Unicode  skyrius 31
+        StringBuilder sb = new StringBuilder();
+        for(char ch = '\u2654'; ch <= '\u265F'; ch++)
+            sb.append(ch);
+        gc.setFont(Font.font("Lucida Console", 36));
+        gc.setLineWidth(1);
+        gc.setStroke(Color.BLACK);
+        gc.strokeText(sb.toString(), 50, 350);
+    }
+// UŽDUOTIS_2: nubrėžkite polilinijas ir poligonus   
+// https://www.tutorialspoint.com/javafx/2dshapes_polygon    
+    private void drawExamples2() {
+        gc.setLineWidth(0.8);
+        gc.setStroke(Color.BLUE);
+        //Triangle
+        gc.strokePolygon(new double[]{200, 230, 230, 200},
+                new double[]{10, 10, 80, 80}, 4);
+        gc.strokeLine(250, 10, 280, 10);
+        gc.strokeLine(280, 10, 280, 80);
+        gc.strokeLine(280, 80, 250, 80);
+
+
+    }
+// UŽDUOTIS_3: nubrėžkite taisyklingus 3, 4, 5, ..., 9-kampius  
+    private void drawExamples3() {    
+        // Nurodymas: parašykite funkciją, kuri paskaičiuoja skaičių masyvus
+        // kuriuose surašomos taisyklingo daugiakampio koordinatės
+        gc.setFill(Color.BLUE);
+        gc.fillPolygon(new double[]{50, 20, 50, 80, 20},
+                new double[]{10, 80, 10, 80, 80}, 5);
+        gc.fillPolygon(new double[]{100, 100, 150, 150},
+                new double[]{10, 50, 50, 10}, 4);
+
+        gc.fillPolygon(new double[]{50, 20, 35, 65, 80},
+                new double[]{90, 120, 150, 150, 120}, 5);
+
+        gc.fillPolygon(new double[]{160, 130, 115, 130, 160, 175},
+                new double[]{90, 90, 120, 150, 150, 120}, 6);
+
+       /* gc.strokePolygon(new double[]{200, 230, 200, 170, 140, 170},
+                new double[]{200, 230, 260, 260, 230, 200}, 6);*/
+
+        gc.fillPolygon(new double[]{375, 400, 415, 415, 400, 375, 360, 360},
+                new double[]{200, 200, 215, 240, 260, 260, 240, 215}, 8);
+        /*double sk = (((51 + 3/7)/100)*30);
+        double sk2 = ((64 + 2/7)/100 *30);
+        gc.strokePolygon(new double[]{200, 230, 215, (230 + sk)},
+                new double[]{300, 300, 330, (300+sk)}, 4);*/
+    }
+// UŽDUOTIS_4: nubrėžkite žiedus https://en.wikipedia.org/wiki/Olympic_symbols
+    private void drawOlympicRings() {
+        gc.setLineWidth(2);
+        gc.setStroke(Color.BLUE);
+        int x=10, y=10, w=50, h=50,
+                d=20, ax=10, ay=20;
+        gc.strokeOval(x, y, w, h);
+        gc.setStroke(Color.BLACK);
+        gc.strokeOval(x + x + 50, y, w, h);
+        gc.setStroke(Color.RED);
+        gc.strokeOval(x*3 + 100, y, w, h);
+        gc.setStroke(Color.YELLOW);
+        gc.strokeOval(x + x/2 + 25, y+25, w, h);
+        gc.setStroke(Color.GREEN);
+        gc.strokeOval(x + x/2*2 + 50 + 30, y+25, w, h);
+
+    }
+// UŽDUOTIS_5: pasirinktinai nubrėžkite savo tematiką:
+// kelių valstybių sudėtingesnes vėliavas http://flagpedia.net/index
+// pvz: Pietų Afrikos, Makedonijos, Norvegijos, Graikijos, Britanijos, ...
+// arba futbolo, krepšinio ar ledo ritulio aikštes su žaidėjų pozicijomis  
+    private void drawFreeThema() {
+        gc.setFill(Color.WHITE);
+        gc.fillPolygon(new double[]{0,0, canvasW, canvasW },
+                new double[]{0, 300, 300, 0}, 4);
+        gc.setFill(Color.RED);
+        gc.fillPolygon(new double[]{0, 0, 125, 125 },
+                new double[]{175, 300, 300, 175}, 4);
+        gc.fillPolygon(new double[]{0, 0, 125, 125},
+                new double[]{0,125, 125, 0}, 4);
+        gc.fillPolygon(new double[]{175, 175, canvasW, canvasW},
+                new double[]{0, 125, 125, 0}, 4);
+        gc.fillPolygon(new double[]{175, 175, canvasW, canvasW},
+                new double[]{175, 300, 300, 175}, 4);
+        gc.setFill(Color.BLUE);
+        gc.fillPolygon(new double[]{0, 0, canvasW, canvasW},
+                new double[]{137.5, 162.5, 162.5, 137.5}, 4);
+        gc.fillPolygon(new double[]{137.5, 137.5, 162.5, 162.5 },
+                new double[]{0, 300, 300, 0}, 4);
+    }
+    //Antros vėliavos braižymas
+    private void drawFreeThema2() {
+        gc.setFill(Color.GREEN);
+        gc.fillPolygon(new double[]{0,0, canvasW, canvasW },
+                new double[]{0, 300, 300, 0}, 4);
+        gc.setFill(Color.WHITE);
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(3);
+        gc.fillPolygon(new double[]{canvasW, canvasW, 250, 40, 60, 250},
+                new double[]{117.5, 130, 130, 0, 0, 117.5}, 6);
+        gc.fillPolygon(new double[]{canvasW, canvasW, 250, 60, 40, 250},
+                new double[]{170, 182.5, 182.5, 300, 300, 170}, 6);
+        gc.setFill(Color.BLUE);
+        gc.fillPolygon(new double[]{canvasW, canvasW, 60, 250 },
+                new double[]{182.5, 300, 300, 182.5}, 4);
+        gc.setFill(Color.RED);
+        gc.fillPolygon(new double[]{canvasW, canvasW, 250, 60 },
+                new double[]{0, 117.5, 117.5, 0}, 4);
+        gc.setFill(Color.YELLOW);
+        gc.fillPolygon(new double[]{0, 190, 0, 0, 173, 0},
+                       new double[]{30, 150, 270, 257.5, 150, 42.5}, 6);
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(new double[]{0, 0, 173},
+                new double[]{42.5, 257.5, 150}, 3);
+
+
+    }
+    // kontrolinės užduotys gynimo metu:
+// įvairios vėliavos, tiesiog tokios sudėtinės figūros kaip namukas,
+// medis, eglė, sniego senio siluetas :-) ir t.t.    
+    @Override
+    public void createControls(){
+        addButton("clear", e -> clearCanvas()); 
+        addButton("grid",  e -> baseGrid());
+        addButton("gridSp",  e -> drawGrid1()); //MySpecialGrid
+        addButton("HVC",   e -> drawHVtoCenter());
+        addButton("XC",    e -> drawXtoCenter());
+        addButton("pvz1",  e -> drawExamples1());
+        addButton("pvz2",  e -> drawExamples2());
+        addButton("pvz3",  e -> drawExamples3());
+        addButton("Olympic",  e -> drawOlympicRings());
+        addButton("UniCode",  e -> drawUnicode());
+        addButton("Flag",  e -> drawFreeThema());
+        addButton("Flag2",  e -> drawFreeThema2());
+        addNewHBox();
+    }
+    @Override
+    public void start(Stage stage) throws Exception {
+        stage.setTitle("Braižymai Canvas lauke (KTU IF)");        
+        setCanvas(Color.CYAN.brighter(), 600, 400);
+        super.start(stage);
+    }       
+    public static void main(String[] args) {
+        launch(args);
+    }    
+}
